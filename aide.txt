@@ -1,0 +1,10 @@
+Dans le cas où un type ne peut pas jouer, il passe son tour.
+On peut absolument tout changer dans le code.
+
+Une demi-seconde pour calculer son tour 
+
+
+Une partie peut ne jamais finir -> partie nulle
+
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/../../../SDL/lib
