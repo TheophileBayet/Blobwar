@@ -29,7 +29,7 @@ Sint32 Strategy::estimateCurrentScore () const {
 		for(Uint8 j = 0 ; j < 8 ; j++)
 			if(_blobs.get(i, j) != -1) scores[_blobs.get(i, j)]++;
   //std::cout<<"player " << _current_player << " score " << scores[_current_player] << endl;
-  return scores[_current_player];
+  return scores[_current_player];// TODO ; changer pour application plus générale
 }
 
 vector<move>& Strategy::computeValidMoves (vector<move>& valid_moves) const {
@@ -57,6 +57,10 @@ vector<move>& Strategy::computeValidMoves (vector<move>& valid_moves) const {
         }
       }
     }
+    while(indice < (int) valid_moves.size()){
+      valid_moves[indice]=valid_moves[0];
+      indice ++;
+    }
     return valid_moves;
 }
 
@@ -64,11 +68,7 @@ void Strategy::nextPlayer(Strategy strat){
   strat._current_player = 1-strat._current_player;
 }
 
-move& searchBestMoves(Strategy current_strat,vector<move>& valid_moves) {
-
-  return valid_moves[0];
-}
-
+/*
 int Strategy::valMinMax (const move& mv, int curr_prof, int max_prof){
   Strategy nextStrat (_blobs,_holes,_current_player,_saveBestMove);
   nextStrat.applyMove(mv);
@@ -96,38 +96,114 @@ int Strategy::valMinMax (const move& mv, int curr_prof, int max_prof){
   end_func :
     return max_score;
 }
+*/
 
 
+int Strategy::ennemi(move& mv, int curr_prof, int max_prof){
+  Strategy nextStrat (_blobs,_holes,_current_player,_saveBestMove);
+  nextStrat.applyMove(mv);
+  int actual_score = nextStrat.estimateCurrentScore();
+  if(curr_prof==max_prof){
+    return actual_score;
+  }
+  nextStrat.nextPlayer(nextStrat);
+  std::vector<move> valid_moves(300,mv);
+  nextStrat.computeValidMoves(valid_moves);
+  int eval = +1000; //TODO :  infini
+  int best_score = eval;
+  for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
+    eval = actual_score-ami(*it,curr_prof+1,max_prof);
+    if(eval < best_score){
+      best_score = eval;
+    }
+  }
+  return best_score;
+}
+
+int Strategy::ami(move& mv, int curr_prof, int max_prof){
+  Strategy nextStrat (_blobs,_holes,_current_player,_saveBestMove);
+  nextStrat.applyMove(mv);
+  int actual_score = nextStrat.estimateCurrentScore();
+  if(curr_prof==max_prof){
+    return actual_score;
+  }
+  nextStrat.nextPlayer(nextStrat);
+  std::vector<move> valid_moves(300,mv);
+  nextStrat.computeValidMoves(valid_moves);
+  int eval = -1000; //TODO : - infini
+  int best_score = eval;
+  for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
+    eval = actual_score-ennemi(*it,curr_prof+1,max_prof);
+    if(eval > best_score){
+      best_score = eval;
+    }
+  }
+  return best_score;
+}
 move& Strategy::findMoveMinMax(move& mv, int profondeur){
   std::vector<move> valid_moves(300,mv);
   computeValidMoves(valid_moves);
-  int best_score = this->estimateCurrentScore() - 5;
+  int best_score = this->estimateCurrentScore()-1000;
+  int i=1;
+  while(i<=profondeur){
   for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
-    int curr_val = valMinMax(*it,1,profondeur);
-    //std::cout << " coucou";
-    if(curr_val> best_score){
-      best_score=curr_val;
-      mv = *it;
-      std::cout<< " score " << curr_val << endl;
-      _saveBestMove(mv);
+
+      int curr_val = ennemi(*it,1,i);
+        if(curr_val> best_score){
+          best_score=curr_val;
+          mv = *it;
+          std::cout<< " score " << curr_val << endl;
+          _saveBestMove(mv);
+        }
+
     }
+    i++;
   }
   return mv;
 }
 
+// OLD findMoveMinMax
 /*
+move& Strategy::findMoveMinMax(move& mv, int profondeur){
+  std::vector<move> valid_moves(300,mv);
+  computeValidMoves(valid_moves);
+  int best_score = this->estimateCurrentScore()-1000;
+  if(profondeur%2==0) { best_score = best_score + 10000;}
+  for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
+    int curr_val = valMinMax(*it,1,profondeur);
+    //std::cout << " coucou";
+    if(profondeur%2==0)// PAIR
+    {
+
+      if(curr_val< best_score){
+        best_score=curr_val;
+        mv = *it;
+        std::cout<< " score " << curr_val << endl;
+        _saveBestMove(mv);
+      }
+    }else{// IMPAIR
+      if(curr_val> best_score){
+        best_score=curr_val;
+        mv = *it;
+        std::cout<< " score " << curr_val << endl;
+        _saveBestMove(mv);
+      }
+    }
+  }
+  return mv;
+}
+*/
+
 
 void Strategy::computeBestMove () {
-    move mv(0,0,0,0);
-
-    std::cout<<"player " << _current_player << " with score " << estimateCurrentScore() << endl;
-    findMoveMinMax(mv,1);
+    move mv(-1,-1,-1,-1);// On peut l'améliorer en mettant le premier valid_move trouvé !
+    //std::cout<<"player " << _current_player << " with score " << estimateCurrentScore() << endl;
+    findMoveMinMax(mv,3);
      return;
 }
 
-*/
+/*
 // SECOND VERSION ( GLOUTONNE )
-
 void Strategy::computeBestMove () {
     move mv(-1,-1,-1,-1);
     std::vector<move> valid_moves(300,mv);
@@ -151,7 +227,7 @@ void Strategy::computeBestMove () {
      _saveBestMove(mv);
      return;
 }
-
+*/
 
 
 

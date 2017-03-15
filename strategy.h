@@ -78,6 +78,10 @@ public:
         */
     int valMinMax (const move& mv, int curr_prof, int max_prof);
 
+    int ami( move& mv, int curr_prof, const int max_prof);
+
+    int ennemi( move& mv, int curr_prof, const int max_prof);
+
 };
 
 #endif
