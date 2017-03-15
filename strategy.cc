@@ -4,7 +4,7 @@
 
 
 void Strategy::applyMove (const move& mv) {
-        if(!((mv.ox-mv.nx==1 || mv.ox-mv.nx==-1)&&(mv.oy-mv.ny==1 || mv.oy-mv.ny==-1))){
+        if(mv.ox-mv.nx==2||mv.ox-mv.nx==-2||mv.oy-mv.ny==2||mv.oy-mv.ny==-2){
           // Déplacement avec déplacement
           _blobs.set(mv.ox,mv.oy,-1);
         }
@@ -129,7 +129,7 @@ void Strategy::computeBestMove () {
 // SECOND VERSION ( GLOUTONNE )
 
 void Strategy::computeBestMove () {
-    move mv(0,0,1,0);
+    move mv(-1,-1,-1,-1);
     std::vector<move> valid_moves(300,mv);
     computeValidMoves(valid_moves);
     // Estimation du meilleur coup :
@@ -143,7 +143,8 @@ void Strategy::computeBestMove () {
       if (curr_score > max){
         max = curr_score;
         mv = *it;
-        std::cout << " meilleur move ! "<< it->nx << endl;
+        std::cout << " meilleur move ! score : "<<max<<  endl;
+        it->display();
       }
 
     }
