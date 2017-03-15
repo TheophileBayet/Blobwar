@@ -16,7 +16,7 @@ private:
     const bidiarray<bool>& _holes;
     //! Current player
     Uint16 _current_player;
-    
+
     //! Call this function to save your best move.
     //! Multiple call can be done each turn,
     //! Only the last move saved will be used.
@@ -24,25 +24,25 @@ private:
 
 public:
         // Constructor from a current situation
-    Strategy (bidiarray<Sint16>& blobs, 
+    Strategy (bidiarray<Sint16>& blobs,
               const bidiarray<bool>& holes,
               const Uint16 current_player,
               void (*saveBestMove)(move&))
             : _blobs(blobs),_holes(holes), _current_player(current_player), _saveBestMove(saveBestMove)
         {
         }
-    
-              
-    
+
+
+
         // Copy constructor
     Strategy (const Strategy& St)
-            : _blobs(St._blobs), _holes(St._holes),_current_player(St._current_player) 
+            : _blobs(St._blobs), _holes(St._holes),_current_player(St._current_player)
         {}
-    
+
         // Destructor
     ~Strategy() {}
-    
-        /** 
+
+        /**
          * Apply a move to the current state of blobs
          * Assumes that the move is valid
          */
@@ -62,8 +62,22 @@ public:
          * Find the best move.
          */
     void computeBestMove ();
-    
-    
+
+        /**
+        * switches the current_player in the strategy
+        */
+    void nextPlayer(Strategy strat) ;
+
+        /**
+        * find the best move and puts in in mv
+        */
+    move& findMoveMinMax(move& mv, int profondeur);
+
+        /**
+        *
+        */
+    int valMinMax (const move& mv, int curr_prof, int max_prof);
+
 };
 
 #endif
