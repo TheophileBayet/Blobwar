@@ -155,7 +155,6 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
           std::cout<< " score " << curr_val << endl;
           _saveBestMove(mv);
         }
-
     }
     i++;
   }
