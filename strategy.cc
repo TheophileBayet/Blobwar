@@ -154,6 +154,7 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
           mv = *it;
           std::cout<< " score " << curr_val << endl;
           _saveBestMove(mv);
+          printf("Profondeur : %d\n",i);
         }
     }
     i++;
@@ -196,10 +197,11 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
 
 void Strategy::computeBestMove () {
     move mv(-1,-1,-1,-1);// On peut l'améliorer en mettant le premier valid_move trouvé !
-    //std::cout<<"player " << _current_player << " with score " << estimateCurrentScore() << endl;
     findMoveMinMax(mv,3);
      return;
 }
+
+
 
 /*
 // SECOND VERSION ( GLOUTONNE )
