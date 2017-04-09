@@ -109,7 +109,7 @@ int Strategy::ennemi(move& mv, int curr_prof, int max_prof){
   nextStrat.nextPlayer(nextStrat);
   std::vector<move> valid_moves(300,mv);
   nextStrat.computeValidMoves(valid_moves);
-  int eval = +1000; //TODO :  infini
+  int eval = +1000;
   int best_score = eval;
   for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
     eval = actual_score-ami(*it,curr_prof+1,max_prof);
@@ -141,25 +141,65 @@ int Strategy::ami(move& mv, int curr_prof, int max_prof){
   return best_score;
 }
 move& Strategy::findMoveMinMax(move& mv, int profondeur){
+  /** En rester ici si ça ne remarche pas **/
   std::vector<move> valid_moves(300,mv);
   computeValidMoves(valid_moves);
   int best_score = this->estimateCurrentScore()-1000;
   int i=1;
+  int curr_val=0;
   while(i<=profondeur){
+    best_score = MiniMaxAB(mv,1,i,-10000,10000);
   for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
-
-      int curr_val = ennemi(*it,1,i);
+      // if (current_player == 1){
+      //curr_val = ennemi(*it,1,i);
+      // } else {
+      curr_val = MiniMaxAB(*it,1,i,-10000,10000);
+      //}
         if(curr_val> best_score){
           best_score=curr_val;
           mv = *it;
+          printf(" On a trouvé un meilleur score ! \n");
           std::cout<< " score " << curr_val << endl;
-          _saveBestMove(mv);
           printf("Profondeur : %d\n",i);
         }
     }
+    _saveBestMove(mv);
+    printf(" On a exploré la profondeur %d \n  Le dernier score sauvegardé est de %d \n", i,best_score);
     i++;
   }
   return mv;
+}
+
+int Strategy::MiniMaxAB(move& mv, int curr_prof, int max_prof, int a, int b)
+{
+  Strategy nextStrat (_blobs,_holes,_current_player,_saveBestMove);
+  nextStrat.applyMove(mv);
+
+  int actual_score = nextStrat.estimateCurrentScore();
+    nextStrat.nextPlayer(nextStrat);
+  if (curr_prof == max_prof){
+    return actual_score;
+  }
+  int alpha = a;
+  int beta = b;
+  std::vector<move> valid_moves(300,mv);
+  computeValidMoves(valid_moves);
+  if (curr_prof % 2 == 1){
+    for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
+      int b_it = MiniMaxAB(*it,curr_prof+1,max_prof,alpha,beta);
+      if (beta > b_it){beta = b_it;}
+      if (alpha >= beta){return alpha;}
+    }
+    return beta;
+  }
+  else {
+    for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
+      int a_it = MiniMaxAB(*it,curr_prof+1,max_prof,alpha,beta);
+      if (alpha < a_it){alpha = a_it;}
+      if (alpha >= beta){ return beta;}
+    }
+    return alpha;
+  }
 }
 
 // OLD findMoveMinMax
@@ -197,7 +237,10 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
 
 void Strategy::computeBestMove () {
     move mv(-1,-1,-1,-1);// On peut l'améliorer en mettant le premier valid_move trouvé !
-    findMoveMinMax(mv,3);
+    //std::cout<<"player " << _current_player << " with score " << estimateCurrentScore() << endl;
+    findMoveMinMax(mv,2);
+    //MiniMaxAB(mv,1,3,-10000,10000);//alpha = -infini, beta = +infini
+
      return;
 }
 

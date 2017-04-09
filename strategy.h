@@ -72,10 +72,11 @@ public:
         * find the best move and puts in in mv
         */
     move& findMoveMinMax(move& mv, int profondeur);
-
         /**
         *
         */
+    int MiniMaxAB(move& mv, int curr_prof, int max_prof, int a, int b);
+
     int valMinMax (const move& mv, int curr_prof, int max_prof);
 
     int ami( move& mv, int curr_prof, const int max_prof);
