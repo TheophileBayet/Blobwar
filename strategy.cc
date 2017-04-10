@@ -20,6 +20,7 @@ void Strategy::applyMove (const move& mv) {
         }
 }
 
+
 Sint32 Strategy::estimateCurrentScore () const {
   	Uint32 scores[4];
 	scores[0] = 0;
@@ -29,9 +30,7 @@ Sint32 Strategy::estimateCurrentScore () const {
 	for(Uint8 i = 0 ; i < 8 ; i++)
 		for(Uint8 j = 0 ; j < 8 ; j++)
 			if(_blobs.get(i, j) != -1) scores[_blobs.get(i, j)]++;
-  //std::cout<<"player " << _current_player << " score " << scores[_current_player] << endl;
-  //if(_current_player==0){return scores[1]-scores[0];}
-  return scores[0]-scores[1];// TODO ; changer pour application plus générale
+  return scores[1-_current_player]-scores[_current_player];// TODO ; changer pour application à 4 joueurs
 }
 
 vector<move>& Strategy::computeValidMoves (vector<move>& valid_moves) const {
@@ -103,7 +102,7 @@ int Strategy::ami(move& mv, int curr_prof, int max_prof){
   nextStrat.nextPlayer(nextStrat);
   std::vector<move> valid_moves(300,mv);
   nextStrat.computeValidMoves(valid_moves);
-  int eval = -1000; //TODO : - infini
+  int eval = -1000;
   int best_score = eval;
   for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
     eval = ennemi(*it,curr_prof+1,max_prof);
