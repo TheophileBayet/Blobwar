@@ -1,5 +1,6 @@
 #include "strategy.h"
 #include <vector>
+#include<time.h>
 
 
 
@@ -29,7 +30,8 @@ Sint32 Strategy::estimateCurrentScore () const {
 		for(Uint8 j = 0 ; j < 8 ; j++)
 			if(_blobs.get(i, j) != -1) scores[_blobs.get(i, j)]++;
   //std::cout<<"player " << _current_player << " score " << scores[_current_player] << endl;
-  return scores[_current_player];// TODO ; changer pour application plus générale
+  //if(_current_player==0){return scores[1]-scores[0];}
+  return scores[0]-scores[1];// TODO ; changer pour application plus générale
 }
 
 vector<move>& Strategy::computeValidMoves (vector<move>& valid_moves) const {
@@ -68,36 +70,6 @@ void Strategy::nextPlayer(Strategy strat){
   strat._current_player = 1-strat._current_player;
 }
 
-/*
-int Strategy::valMinMax (const move& mv, int curr_prof, int max_prof){
-  Strategy nextStrat (_blobs,_holes,_current_player,_saveBestMove);
-  nextStrat.applyMove(mv);
-  if(curr_prof==max_prof){
-    //std::cout <<" player :" << _current_player << " ; profondeur " << curr_prof <<
-    //" score : " << nextStrat.estimateCurrentScore() << std::endl;
-    return nextStrat.estimateCurrentScore();
-  }
-  // On va calculer l'ensemble des coups possibles pour l'adversaire.
-  nextStrat.nextPlayer(nextStrat);
-  std::vector<move> valid_moves(300,mv);
-  nextStrat.computeValidMoves(valid_moves);
-  // on cherche parmi tous les moves valides le meilleur.
-  int max_score = -100000;
-  int curr_score ;
-  for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
-    if ( it->ox == 0 && it->oy == 0 && it->nx == 0 && it->ny == 0 ){ goto end_func ; }
-    curr_score = valMinMax(*it,curr_prof+1,max_prof);
-    if(curr_score> max_score){
-      max_score=curr_score;
-    }
-  }
-  goto end_func ;
-
-  end_func :
-    return max_score;
-}
-*/
-
 
 int Strategy::ennemi(move& mv, int curr_prof, int max_prof){
   Strategy nextStrat (_blobs,_holes,_current_player,_saveBestMove);
@@ -112,7 +84,8 @@ int Strategy::ennemi(move& mv, int curr_prof, int max_prof){
   int eval = +1000;
   int best_score = eval;
   for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
-    eval = actual_score-ami(*it,curr_prof+1,max_prof);
+    eval = ami(*it,curr_prof+1,max_prof);
+    //MIN
     if(eval < best_score){
       best_score = eval;
     }
@@ -133,40 +106,82 @@ int Strategy::ami(move& mv, int curr_prof, int max_prof){
   int eval = -1000; //TODO : - infini
   int best_score = eval;
   for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
-    eval = actual_score-ennemi(*it,curr_prof+1,max_prof);
+    eval = ennemi(*it,curr_prof+1,max_prof);
+    //MAX
     if(eval > best_score){
       best_score = eval;
     }
   }
   return best_score;
 }
+
 move& Strategy::findMoveMinMax(move& mv, int profondeur){
   /** En rester ici si ça ne remarche pas **/
+  float temps ;
+  clock_t t1,t2;
   std::vector<move> valid_moves(300,mv);
   computeValidMoves(valid_moves);
   int best_score = this->estimateCurrentScore()-1000;
   int i=1;
   int curr_val=0;
+
   while(i<=profondeur){
+    t1=clock();
+
+
+                  /*** Début Min-Max ***/
+
+
+
+/*
+      best_score=ami(mv,1,i);
+      for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
+        curr_val=ami(*it,1,i);
+        if(curr_val< best_score){
+          best_score=curr_val;
+          mv = *it;
+          printf(" On a trouvé un meilleur score (MAX) ! \n");
+          std::cout<< " score " << curr_val << endl;
+          printf("Profondeur : %d\n",i);
+        }
+      } // Fin parcours éléments
+      */
+
+
+            /*** Fin Min-Max ***/
+
+
+
+
+
+            /*** Début alpha-beta ***/
+
     best_score = MiniMaxAB(mv,1,i,-10000,10000);
-  for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
-      // if (current_player == 1){
-      //curr_val = ennemi(*it,1,i);
-      // } else {
+    for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
       curr_val = MiniMaxAB(*it,1,i,-10000,10000);
-      //}
-        if(curr_val> best_score){
+        if(curr_val< best_score){
           best_score=curr_val;
           mv = *it;
           printf(" On a trouvé un meilleur score ! \n");
           std::cout<< " score " << curr_val << endl;
           printf("Profondeur : %d\n",i);
         }
-    }
+      }
+
+      /** Fin alpha-beta **/
+
+    /** Fin du while : On sauve le move trouvé, on affiche le temps de calcul et on incrémente **/
     _saveBestMove(mv);
     printf(" On a exploré la profondeur %d \n  Le dernier score sauvegardé est de %d \n", i,best_score);
+    t2=clock();
+    temps = (float)(t2-t1)/CLOCKS_PER_SEC;
+    printf("temps d'execution pourla profondeur %d = %f secondes \n",i, temps);
     i++;
-  }
+  } // FIN WHILE
+
+
+
+
   return mv;
 }
 
@@ -184,7 +199,7 @@ int Strategy::MiniMaxAB(move& mv, int curr_prof, int max_prof, int a, int b)
   int beta = b;
   std::vector<move> valid_moves(300,mv);
   computeValidMoves(valid_moves);
-  if (curr_prof % 2 == 1){
+  if (curr_prof % 2 == 0){
     for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
       int b_it = MiniMaxAB(*it,curr_prof+1,max_prof,alpha,beta);
       if (beta > b_it){beta = b_it;}
@@ -202,102 +217,8 @@ int Strategy::MiniMaxAB(move& mv, int curr_prof, int max_prof, int a, int b)
   }
 }
 
-// OLD findMoveMinMax
-/*
-move& Strategy::findMoveMinMax(move& mv, int profondeur){
-  std::vector<move> valid_moves(300,mv);
-  computeValidMoves(valid_moves);
-  int best_score = this->estimateCurrentScore()-1000;
-  if(profondeur%2==0) { best_score = best_score + 10000;}
-  for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
-    int curr_val = valMinMax(*it,1,profondeur);
-    //std::cout << " coucou";
-    if(profondeur%2==0)// PAIR
-    {
-
-      if(curr_val< best_score){
-        best_score=curr_val;
-        mv = *it;
-        std::cout<< " score " << curr_val << endl;
-        _saveBestMove(mv);
-      }
-    }else{// IMPAIR
-      if(curr_val> best_score){
-        best_score=curr_val;
-        mv = *it;
-        std::cout<< " score " << curr_val << endl;
-        _saveBestMove(mv);
-      }
-    }
-  }
-  return mv;
-}
-*/
-
-
 void Strategy::computeBestMove () {
     move mv(-1,-1,-1,-1);// On peut l'améliorer en mettant le premier valid_move trouvé !
-    //std::cout<<"player " << _current_player << " with score " << estimateCurrentScore() << endl;
-    findMoveMinMax(mv,2);
-    //MiniMaxAB(mv,1,3,-10000,10000);//alpha = -infini, beta = +infini
-
+    findMoveMinMax(mv,5);
      return;
 }
-
-
-
-/*
-// SECOND VERSION ( GLOUTONNE )
-void Strategy::computeBestMove () {
-    move mv(-1,-1,-1,-1);
-    std::vector<move> valid_moves(300,mv);
-    computeValidMoves(valid_moves);
-    // Estimation du meilleur coup :
-    int max = this->estimateCurrentScore() -1000;
-    int curr_score = max;
-    for(std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
-      Strategy nextStrat (_blobs,_holes,_current_player,_saveBestMove);
-      nextStrat.applyMove(*it);
-      //std::cout << "in parcours de valid_moves" << endl;
-      curr_score = nextStrat.estimateCurrentScore();
-      if (curr_score > max){
-        max = curr_score;
-        mv = *it;
-        std::cout << " meilleur move ! score : "<<max<<  endl;
-        it->display();
-      }
-
-    }
-     _saveBestMove(mv);
-     return;
-}
-*/
-
-
-
-// FIRST VERSION ( BASIC)
-/*/
-void Strategy::computeBestMove () {
-    // To be improved...
-
-    //The following code find a valid move.
-    move mv(0,0,0,0);
-    //iterate on starting position
-    for(mv.ox = 0 ; mv.ox < 8 ; mv.ox++) {
-        for(mv.oy = 0 ; mv.oy < 8 ; mv.oy++) {
-            if (_blobs.get(mv.ox, mv.oy) == (int) _current_player) {
-                //iterate on possible destinations
-                for(mv.nx = std::max(0,mv.ox-2) ; mv.nx <= std::min(7,mv.ox+2) ; mv.nx++) {
-                    for(mv.ny = std::max(0,mv.oy-2) ; mv.ny <= std::min(7,mv.oy+2) ; mv.ny++) {
-                        if (_holes.get(mv.nx, mv.ny)) continue;
-                        if (_blobs.get(mv.nx, mv.ny) == -1) goto end_choice;
-                    }
-                }
-            }
-        }
-    }
-
-end_choice:
-     _saveBestMove(mv);
-     return;
-}*/
