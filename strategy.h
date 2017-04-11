@@ -81,7 +81,11 @@ public:
 
     int ami( move& mv, int curr_prof, const int max_prof);
 
+    int ami_par(move& mv, int curr_prof, int max_prof);
+
     int ennemi( move& mv, int curr_prof, const int max_prof);
+
+    int ennemi_par(move& mv, int curr_prof, int max_prof);
 
 };
 
