@@ -166,22 +166,20 @@ Si vous pouviez augmenter le nombre de c{\oe}urs de votre machine, estimez le no
 \end{enumerate}
 Comment avez-vous fait cette estimation ? % {\bf Réponse :  }
 
-\vspace*{3cm}
+\vspace{3cm}
 
-\newpage
+
 \section{Optimisations}
 Pour chaque optimisation réalisée, préciser ci-dessous comment et à combien estimez vous les
 gains obtenus.
 \begin{itemize}
-\item Proposez vous différents itérateurs sur toutes les positions possibles ?
-\vspace{1cm}
-\item Avez-vous implanté un codage différent pour les blobs ?
-\vspace{1cm}
-\item Quelles autres optimisations avez-vous développées ?
+\item Nous n'avons réalisé aucunes optimisations pour ce projet.
 \end{itemize}
-\vspace{2cm}
+\vspace{1cm}
 Décrivez lequel de vos algorithme semble le plus rapide, et de quel ordre de grandeur.
 Quelles conclusions tirez-vous de vos expériences ?
+\vspace{1cm}
+L'algorithme le plus rapide pour notre projet est, de loin, l'$\alpha-\beta$. En effet il atteint la profondeur 5 en un temps moyen de 30s, alors que le min-max n'atteint même pas la profondeur 4 pendant ce même laps de temps. C'est bien normal puisque l'algorithme du $\alpha-\beta$ permet un élagage de l'arbre des mouvements, permettant ainsi de gagner en efficacité par rapoort à l'algorithme du min-max.
 \vspace{2cm}
 
 
@@ -200,7 +198,6 @@ Faire une analyse critique de votre travail:\\
 \vspace{1cm}
 \item Quels développements futurs seraient envisageables ? \\
   Un des principaux développements futurs envisageables est l'amélioration de la parallélisation pour que nous puissions atteindre des profondeurs plus grandes en un temps identiques, ou des profondeurs identiques en un temps moins important.
-\vspace{1cm}
 \end{itemize}
 
 

@@ -233,9 +233,8 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
           /*** Début Min-Max SEQ***/
 
 
-/*
 
-      best_score=ami(mv,1,i);
+/*      best_score=ami(mv,1,i);
       for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
         curr_val=ami(*it,1,i);
         //printf("curr_val=%d\n",curr_val);
@@ -247,7 +246,6 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
           printf("Profondeur : %d\n",i);
         }
       } // Fin parcours éléments
-
 */
 
             /*** Fin Min-Max SEQ***/
@@ -255,7 +253,7 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
 
             /*** Début alpha-beta ***/
 
-    best_score = MiniMaxAB(mv,1,i,-10000,10000);
+    best_score = MiniMaxAB(mv,1,i,-10000,10000); //a = -infini b = +infini
     for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
       //On applique l'algorithme alpha-bêta
       curr_val = MiniMaxAB(*it,1,i,-10000,10000); //a = -Infini et b = +Infini
