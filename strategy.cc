@@ -75,7 +75,7 @@ void Strategy::nextPlayer(Strategy strat){
 }
 
 
-
+//Fonction ennemi du MinMax
 int Strategy::ennemi(move& mv, int curr_prof, int max_prof){
   Strategy nextStrat (_blobs,_holes,_current_player,_saveBestMove);
   nextStrat.applyMove(mv);
@@ -98,6 +98,7 @@ int Strategy::ennemi(move& mv, int curr_prof, int max_prof){
   return best_score;
 }
 
+//Fonction ennemi du MinMax parallélisée
 int Strategy::ennemi_par(move& mv, int curr_prof, int max_prof){
   Strategy nextStrat (_blobs,_holes,_current_player,_saveBestMove);
   nextStrat.applyMove(mv);
@@ -113,7 +114,7 @@ int Strategy::ennemi_par(move& mv, int curr_prof, int max_prof){
   int best_score;
   int k = 0;
   for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
-    #pragma omp task shared(eval)
+    #pragma omp task shared(eval) //On parallélise
     {
     eval[k] = ami(*it,curr_prof+1,max_prof);
     }
@@ -129,6 +130,7 @@ int Strategy::ennemi_par(move& mv, int curr_prof, int max_prof){
   return best_score;
 }
 
+//Fonction ami du MinMax
 int Strategy::ami(move& mv, int curr_prof, int max_prof){
   Strategy nextStrat (_blobs,_holes,_current_player,_saveBestMove);
   nextStrat.applyMove(mv);
@@ -151,14 +153,13 @@ int Strategy::ami(move& mv, int curr_prof, int max_prof){
   return best_score;
 }
 
-
+//Fonction ami du MinMax parallélisée
 int Strategy::ami_par(move& mv, int curr_prof, int max_prof){
   Strategy nextStrat (_blobs,_holes,_current_player,_saveBestMove);
   nextStrat.applyMove(mv);
   int actual_score = nextStrat.estimateCurrentScore();
   if(curr_prof==max_prof){
   //  printf("profondeur act : %d ; prof max : %d , valeur retournée : %d\n",curr_prof,max_prof,actual_score);
-
     return actual_score;
   }
   nextStrat.nextPlayer(nextStrat);
@@ -168,7 +169,7 @@ int Strategy::ami_par(move& mv, int curr_prof, int max_prof){
   int best_score;
   int k = 0;
   for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
-    #pragma omp task shared(eval)
+    #pragma omp task shared(eval) //On parallélise
     {
     eval[k] = ennemi_par(*it,curr_prof+1,max_prof);
     }
@@ -187,7 +188,6 @@ int Strategy::ami_par(move& mv, int curr_prof, int max_prof){
 }
 
 move& Strategy::findMoveMinMax(move& mv, int profondeur){
-  /** En rester ici si ça ne remarche pas **/
   float temps ;
   clock_t t1,t2;
   std::vector<move> valid_moves(300,mv);
@@ -200,12 +200,9 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
   while(i<=profondeur){
     t1=clock();
 
+
                   /*** Début Min-Max PAR ***/
-
-
-
-
-      best_score=ami_par(mv,1,i);
+      /*best_score=ami_par(mv,1,i);
       int k = 0;
       int vals[valid_moves.size()];// Tableau des valeurs des mouvements valides
       for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
@@ -226,7 +223,7 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
               best_score=curr_val;
               mv=valid_moves[l];
             }
-          }
+          }*/
 
 
 
@@ -257,9 +254,10 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
 
 
             /*** Début alpha-beta ***/
-/*
+
     best_score = MiniMaxAB(mv,1,i,-10000,10000);
     for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
+      //On applique l'algorithme alpha-bêta
       curr_val = MiniMaxAB(*it,1,i,-10000,10000);
         if(curr_val< best_score){
           best_score=curr_val;
@@ -268,7 +266,7 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
           std::cout<< " score " << curr_val << endl;
           printf("Profondeur : %d\n",i);
         }
-      }*/
+      }
 
       /** Fin alpha-beta **/
 
@@ -277,23 +275,23 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
     printf(" On a exploré la profondeur %d \n  Le dernier score sauvegardé est de %d \n", i,best_score);
     t2=clock();
     temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-    printf("temps d'execution pourla profondeur %d = %f secondes \n",i, temps);
+    printf("temps d'execution pour la profondeur %d = %f secondes \n",i, temps);
     i++;
   } // FIN WHILE
-
-
 
 
   return mv;
 }
 
+
+
+//Alpha Bêta
 int Strategy::MiniMaxAB(move& mv, int curr_prof, int max_prof, int a, int b)
 {
   Strategy nextStrat (_blobs,_holes,_current_player,_saveBestMove);
   nextStrat.applyMove(mv);
-
   int actual_score = nextStrat.estimateCurrentScore();
-    nextStrat.nextPlayer(nextStrat);
+  nextStrat.nextPlayer(nextStrat);
   if (curr_prof == max_prof){
     return actual_score;
   }
@@ -301,7 +299,9 @@ int Strategy::MiniMaxAB(move& mv, int curr_prof, int max_prof, int a, int b)
   int beta = b;
   std::vector<move> valid_moves(300,mv);
   computeValidMoves(valid_moves);
+  //If N is a Min node
   if (curr_prof % 2 == 0){
+    //On parcourt les successeurs du noeud
     for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
       int b_it = MiniMaxAB(*it,curr_prof+1,max_prof,alpha,beta);
       if (beta > b_it){beta = b_it;}
@@ -310,6 +310,7 @@ int Strategy::MiniMaxAB(move& mv, int curr_prof, int max_prof, int a, int b)
     return beta;
   }
   else {
+    //On parcourt les successeurs du noeud
     for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
       int a_it = MiniMaxAB(*it,curr_prof+1,max_prof,alpha,beta);
       if (alpha < a_it){alpha = a_it;}
