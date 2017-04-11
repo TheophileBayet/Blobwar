@@ -1,0 +1,210 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{tabularx}
+%\usepackage{a4wide}
+\usepackage[margin=2.cm]{geometry}
+\usepackage{pifont}
+
+\title{Projet blobwar: rapport final}
+\author{Groupe: Théophile BAYET, Paul MOUNE}
+\date{11 avril 2017}
+
+\begin{document}
+
+\maketitle
+
+\section*{Notice}
+
+Ce document est à imprimer et compléter, soit à la main (en remplissant le pdf à la main et en 
+le remettant à votre enseignant lors du tournoi)
+soit en complétant le latex.
+De préférence, 
+rendez ce rapport à votre enseignant lors du tournoi; sinon joignez-le à votre archive sur TEIDE.
+
+
+Les réponses doivent être concises et claires.
+Une réponse consiste soit en une case à cocher, soit en un 
+petit texte explicatif. 
+
+
+\section{Travail réalisé}
+
+\noindent \emph{\textbf{Attention:} remplissez les grilles honnêtement, le code sera
+  contrôlé et toute incohérence sera sanctionnée.  }
+
+% \subsection{Base}
+
+Complétez le tableau suivant 
+en fonction du travail que vous avez réalisé (cochez la réponse appropriée) :
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{tabular}{| l  l | c | c |}
+\hline
+ & & oui & non \\
+glouton && \ding{110} & \ding{111} \\
+\hline
+min-max && \ding{110} & \ding{111} \\
+\hline
+alpha-beta séquentiel && \ding{110} & \ding{111} \\
+\hline
+calcul {\em anytime} du coup  && \ding{110} & \ding{111} \\
+\hline 
+analyse de performances & & \ding{110} & \ding{111}\\
+\hline
+optimisations && \ding{110} & \ding{111} \\
+\hline
+alpha-beta parallèle: & & &\\
+ & début d'implémentation & \ding{111} & \ding{110} \\
+ & code stable & \ding{111} & \ding{110} \\
+ & optimisé & \ding{111} & \ding{110} \\
+\hline
+mon code est stable & & \ding{110} & \ding{111}\\
+\hline
+\end{tabular}
+\end{center}
+\end{figure}
+
+Commentaires:
+
+% \newpage
+
+\begin{center}
+\begin{tabular}{|l|c c c c|}
+\hline
+& 0 & 1 & 2 & 3 \\
+\hline
+Comment estimez vous la qualité (clarté) de votre code ? & \ding{111} & \ding{111} & \ding{110} & \ding{111}\\
+\hline
+Comment jugez vous la qualité de vos commentaires ?& \ding{111} & \ding{111} & \ding{110} & \ding{111}\\
+\hline
+Faites vous une utilisation appropriée de la STL ?& \ding{111} & \ding{111} & \ding{111} & \ding{111}\\
+\hline
+Comment jugez vous la fiabilité de votre programme ? & \ding{111} & \ding{111} & \ding{111} & \ding{111}\\
+\hline
+\end{tabular}
+\end{center}
+Illustrer  chaque point par un exemple ou un argument (une/deux lignes)
+\begin{itemize}
+\item~\\~
+\item~\\~
+\item~\\~
+\item~\\~
+\end{itemize}
+
+
+\vspace{6cm}
+
+\section{Évaluation de alpha-beta séquentiel }
+% \subsection{Efficacité}
+Quel est le temps de calcul moyen pour une profondeur de 5 de votre
+min-max
+\begin{itemize}
+\item en début de partie ?
+\item en milieu de partie ?
+\item en fin de partie ? 
+\end{itemize}
+
+Quel est le temps de calcul moyen pour une profondeur de 5 de votre
+alpha-beta 
+\begin{itemize}
+\item jusqu'à quelle profondeur descendez vous en début de partie ?
+\item en milieu de partie ?
+\item en fin de partie ? 
+\end{itemize}
+
+\vspace{.5cm}
+Pour une profondeur fixée, êtes-vous en mesure d'estimer les gains de temps
+apportés par $\alpha-\beta$? Combien de n\oe uds votre algorithmique arrive
+à élaguer?
+
+\vspace{2cm}
+
+\section{Parallélisation}
+
+Concernant la parallélisation de votre algorithme,
+décrivez succinctement 
+\begin{itemize}
+\item comment vous avez procédé pour la mettre en œuvre
+\item comment avez-vous évalué l'apport (ou la dégradation de
+  performances) de la parallélisation?
+\item Avez vous réalisé des optimisations ? Avez-vous testé d'autres
+  algorithmes, différentes parallélisations?
+\end{itemize}
+
+Remplir le tableau suivant pour une  configutaion d'entrée fixée (par exemple initiale)  \\
+(NB {\tt Seq} désigne votre programme alpha-beta séquentiel; {\tt Par} votre autre programme alpha-beta parallèle,
+avec $T$ = le nombre de threads utilisés. 
+
+\begin{center}
+\begin{tabular}{|l||c|c|c|c|c|c||}
+\hline
+                          & ~~~Seq~~~ & ~~~Par~~~ & ~~~Par~~~ & ~~~Par~~~ & ~~~Par~~~ & ~~~Par~~~   \\
+                          & P=1 & T=1  & T=2 & T=4 & T=8 & T=16  \\
+\hline
+Nombre de n{\oe}uds explorés      & & & & & &  \\
+\hline
+Travail (somme des temps cpus) & & & & & &  \\
+\hline
+Temps écoulé (elapsed)         & & & & & & \\
+\hline
+\end{tabular} 
+\end{center}
+Indiquer le nombre $P$  de coeurs (CPUs) de votre machine d'expérimentation: $P = \ldots$ \\
+Si vous pouviez augmenter le nombre de c{\oe}urs de votre machine, estimez le nombre $P$ de  c{\oe}urs requis pour que votre programme parallèle soit:
+\begin{enumerate}
+\item plus rapide que votre programme séquentiel: $P=\ldots $
+\item 10 fois plus rapide que votre programme séquentiel: $P=\ldots $
+\end{enumerate}
+Comment avez-vous fait cette estimation ? % {\bf Réponse :  }
+
+\vspace*{3cm}
+
+\newpage
+\section{Optimisations}
+Pour chaque optimisation réalisée, préciser ci-dessous comment et à combien estimez vous les
+gains obtenus.
+\begin{itemize}
+\item Proposez vous différents itérateurs sur toutes les positions possibles ?
+\vspace{1cm}
+\item Avez-vous implanté un codage différent pour les blobs ?
+\vspace{1cm}
+\item Quelles autres optimisations avez-vous développées ?
+\end{itemize}
+\vspace{2cm}
+Décrivez lequel de vos algorithme semble le plus rapide, et de quel ordre de grandeur.
+Quelles conclusions tirez-vous de vos expériences ?
+\vspace{2cm}
+
+
+
+
+
+\section{Auto-analyse}
+
+Faire une analyse critique de votre travail:\\
+\begin{itemize}
+\item Indiquer les points forts de votre travail.
+\vspace{1cm}
+\item Quels sont les points problématiques ?
+\vspace{1cm}
+\item Quels développements futurs seraient envisageables ?
+\vspace{1cm}
+\end{itemize}
+
+
+% \newpage
+\section{Commentaires libres}
+
+Vous pouvez laisser des commentaires supplémentaires ici. Les commentaires
+doivent être pertinents et intéressants (par exemple, quel est selon vous
+le point fort de votre travail ? Quels développements futurs seraient
+envisageables ? Quels sont les points problématiques ?).
+
+
+
+
+
+\end{document}
