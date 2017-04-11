@@ -258,7 +258,7 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
     best_score = MiniMaxAB(mv,1,i,-10000,10000);
     for (std::vector<move>::iterator it = valid_moves.begin(); it != valid_moves.end(); ++it){
       //On applique l'algorithme alpha-bêta
-      curr_val = MiniMaxAB(*it,1,i,-10000,10000);
+      curr_val = MiniMaxAB(*it,1,i,-10000,10000); //a = -Infini et b = +Infini
         if(curr_val< best_score){
           best_score=curr_val;
           mv = *it;
@@ -285,7 +285,7 @@ move& Strategy::findMoveMinMax(move& mv, int profondeur){
 
 
 
-//Alpha Bêta
+//Algorithme du Alpha-Bêta
 int Strategy::MiniMaxAB(move& mv, int curr_prof, int max_prof, int a, int b)
 {
   Strategy nextStrat (_blobs,_holes,_current_player,_saveBestMove);
