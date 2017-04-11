@@ -9,7 +9,7 @@ OBJS_launchComputation = launchStrategy.o strategy.o bidiarray.o shmem.o
 LIBS = -lSDL_image -lSDL_ttf -lm `sdl-config --libs` -lSDL_net -lpthread -L ../../../SDL/lib
 
 CFLAGS = -Wall -Werror -O3 -g `sdl-config --cflags`   -Wno-strict-aliasing -DDEBUG -I ../../../SDL/include/SDL
-CC = g++
+CC = g++ -fopenmp
 
 # $(sort) remove duplicate object
 OBJS_ALL = $(sort $(OBJS) $(OBJS_launchComputation))
@@ -19,7 +19,7 @@ blobwar: $(OBJS) launchStrategy
 $(OBJS_ALL):	%.o:	%.cc common.h
 	$(CC) -c $<  $(CFLAGS)
 launchStrategy: $(OBJS_launchComputation)
-	$(CC) $(OBJS_launchComputation) $(CFLAGS) -o launchStrategy $(LIBS) -pg
+	$(CC) $(OBJS_launchComputation) $(CFLAGS) -fopenmp -o launchStrategy $(LIBS) -pg -lm
 #testPerf: $(OBJS_testPerf)
 #	$(CC) $(OBJS_testPerf) $(CFLAGS) -o testPerf $(LIBS) -pg
 
