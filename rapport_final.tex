@@ -54,7 +54,7 @@ calcul {\em anytime} du coup  && \ding{110} & \ding{111} \\
 \hline 
 analyse de performances & & \ding{110} & \ding{111}\\
 \hline
-optimisations && \ding{110} & \ding{111} \\
+optimisations && \ding{111} & \ding{110} \\
 \hline
 alpha-beta parallèle: & & &\\
  & début d'implémentation & \ding{111} & \ding{110} \\
@@ -80,31 +80,29 @@ Comment estimez vous la qualité (clarté) de votre code ? & \ding{111} & \ding{
 \hline
 Comment jugez vous la qualité de vos commentaires ?& \ding{111} & \ding{111} & \ding{110} & \ding{111}\\
 \hline
-Faites vous une utilisation appropriée de la STL ?& \ding{111} & \ding{111} & \ding{111} & \ding{111}\\
+Faites vous une utilisation appropriée de la STL ?& \ding{111} & \ding{110} & \ding{111} & \ding{111}\\
 \hline
-Comment jugez vous la fiabilité de votre programme ? & \ding{111} & \ding{111} & \ding{111} & \ding{111}\\
+Comment jugez vous la fiabilité de votre programme ? & \ding{111} & \ding{110} & \ding{111} & \ding{111}\\
 \hline
 \end{tabular}
 \end{center}
 Illustrer  chaque point par un exemple ou un argument (une/deux lignes)
 \begin{itemize}
-\item~\\~
-\item~\\~ Notre code est commenté afin que l'on puisse suivre les différentes étapes lors des appels de fonctions. Quand on regarde le code, on voit clairement si on parcourt les coups à l'aide du MinMax ou du Apha-Bêta par exemple.
+\item~ Notre code nous semble suffisament clair pour être compris, les noms des différentes variables nous semblent appropriés, tout comme le noms des fonctions que nous appelons.
+\item~ Notre code est commenté afin que l'on puisse suivre les différentes étapes lors des appels de fonctions. Quand on regarde le code, on voit clairement si on parcourt les coups à l'aide du MinMax ou du Apha-Bêta par exemple.
 \item~\\~
 \item~\\~
 \end{itemize}
 
 
-\vspace{6cm}
+\vspace{3cm}
 
 \section{Évaluation de alpha-beta séquentiel }
 % \subsection{Efficacité}
 Quel est le temps de calcul moyen pour une profondeur de 5 de votre
 min-max
 \begin{itemize}
-\item en début de partie ?
-\item en milieu de partie ?
-\item en fin de partie ? 
+\item Notre min-max n'est malheureusement pas assez efficace pour atteindre la profondeur 5 dans un temps raisonnable. 
 \end{itemize}
 
 Quel est le temps de calcul moyen pour une profondeur de 5 de votre
@@ -112,13 +110,21 @@ alpha-beta
 \begin{itemize}
 \item En début de partie, la profondeur 5 est atteinte en 27,7 secondes avec l'alpha-bêta non parallélisé.
 \item En milieu de partie, la profondeur 5 est atteinte en 34,9 secondes avec l'alpha-bêta non parallélisé.
-\item En fin de partie, la profondeur 5 est atteinte en 27,7 secondes avec l'alpha-bêta non parallélisé.
+\item En fin de partie, la profondeur 5 est atteinte en 37.8 secondes avec l'alpha-bêta non parallélisé.
 \end{itemize}
 
 \vspace{.5cm}
 Pour une profondeur fixée, êtes-vous en mesure d'estimer les gains de temps
 apportés par $\alpha-\beta$? Combien de n\oe uds votre algorithmique arrive
 à élaguer?
+
+\vspace{.5cm}
+ On voit bien que notre algorithme $\alpha-\beta$ est bien plus performant que notre min-max, puisqu'il est plus rapide pour atteindre la profondeur 5 que le min-max pour atteindre la profondeur 4 ! Le gain de temps apporté par $\alpha-\beta$ est vraiment conséquent !
+
+Pour une profondeur de 3, l'$\alpha-\beta$ met environ un dixième de seconde, alors que le min-max met près d'une seconde et demi !
+De même pour une profondeur de 4, notre $\alpha-\beta$ met entre 1 seconde et 1,5 seconde en moyenne, alors que le min-max met plus d'une minute.
+
+On conclue donc que l'$\alpha-\beta$ est vraiment plus performant que le min-max et qu'il apporte un gain de temps énorme.
 
 \vspace{2cm}
 
@@ -186,11 +192,14 @@ Quelles conclusions tirez-vous de vos expériences ?
 
 Faire une analyse critique de votre travail:\\
 \begin{itemize}
-\item Indiquer les points forts de votre travail.
+\item Indiquer les points forts de votre travail. \\
+  Un de nos points forts sur ce travail est la clarté du code et des algorithmes utilisés. En effet, nous avons utilisé les algorithmes min-max et $\alpha-\beta$ fournis en cours, il est donc aisé de comprendre le fonctionnement de nos fonctions. De plus, nous avons veillé à insérer dans notre code suffisamment de print pour qu'il soit possible de suivre le cheminement de notre programme lors de son exécution, d'afficher les informations pertinentes dans le terminal pour tout les calculs de temps en fonction de la profondeur. Enfin, les commentaires au sein même du code permettent de suivre clairement le déroulement des fonctions appelées.
 \vspace{1cm}
-\item Quels sont les points problématiques ?
+\item Quels sont les points problématiques ? \\
+  Nous avons essayé de paralléliser nos fonctions en utilisant des synchronisations, mais au vu de nos résulats moins bons, il semblerait que nous ayons eu quelques problèmes avec cette partie. En effet, nous perdons environ 1 seconde de calcul quand nous utilisons une version parallélisée de nos fonctions.  
 \vspace{1cm}
-\item Quels développements futurs seraient envisageables ?
+\item Quels développements futurs seraient envisageables ? \\
+  Un des principaux développements futurs envisageables est l'amélioration de la parallélisation pour que nous puissions atteindre des profondeurs plus grandes en un temps identiques, ou des profondeurs identiques en un temps moins important.
 \vspace{1cm}
 \end{itemize}
 
